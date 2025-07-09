@@ -1,0 +1,44 @@
+# Laravel Default
+/vendor
+/node_modules
+/public/storage
+/storage/*.key
+.env
+.env.*
+Homestead.yaml
+Homestead.json
+.phpunit.result.cache
+
+# Laravel IDE Helper
+.phpstorm.meta.php
+_ide_helper.php
+_ide_helper_models.php
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Log Files
+*.log
+/storage/logs/
+
+# Cache & Debug
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/debugbar/
+
+# Database (SQLite หรือ Local)
+/database/*.sqlite
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# Composer & npm
+composer.lock
+package-lock.json
+yarn.lock
+
+# XAMPP (บางคนเก็บไฟล์ชั่วคราวไว้ใน tmp)
+tmp/
