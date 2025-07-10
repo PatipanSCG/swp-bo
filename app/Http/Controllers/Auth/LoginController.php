@@ -50,15 +50,34 @@ class LoginController extends Controller
     protected function attemptLogin(\Illuminate\Http\Request $request)
     {
         $user = \App\Models\User::where('UserName', $request->input('UserName'))
-                            ->where('RowStatus', 1)
-                            ->first();
+            ->where('RowStatus', 1)
+            ->first();
 
-        if ($user && $user->PasswordText === $request->input('password')) {
-            \Auth::login($user, $request->filled('remember'));
-            return true;
+        if (!$user || $user->PasswordText !== $request->input('password')) {
+            return false;
         }
 
-        return false;
-    }
+        // STEP 2: ตรวจสอบว่ามี UserName นี้ใน SQL Server (DB B) หรือไม่
+        $userInSqlsrv = \DB::connection('sqlsrv_secondary')
+            ->table('users')  // ชื่อตารางใน SQL Server
+            ->where('UserName', $request->input('UserName'))
+            ->first();
 
+        if (!$userInSqlsrv) {
+            return false; // ไม่ให้ login ถ้าไม่มี user นี้ใน DB B
+        }
+
+        // STEP 3: Login สำเร็จ
+        \Auth::login($user, $request->filled('remember'));
+
+        $permissions = \DB::connection('sqlsrv_secondary')
+            ->table('role_menu_permissions')
+            ->join('menus', 'menus.MenuID', '=', 'role_menu_permissions.MenuID')
+            ->where('role_menu_permissions.RoleID', $userInSqlsrv->RoleID)
+            ->where('CanView', 1)
+            ->select('menus.MenuName', 'menus.Route')
+            ->get();
+        session(['menu_permissions' => $permissions]);
+        return true;
+    }
 }
