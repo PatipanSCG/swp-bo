@@ -3,25 +3,53 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Nozzle extends Model
 {
     protected $connection = 'sqlsrv_secondary';
+    use HasFactory;
+
     protected $table = 'nozzle';
     protected $primaryKey = 'NozzleID';
-    public $timestamps = false;
+
+    public $timestamps = true;
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
-        'DispenserID', 'NozzleNumber', 'FuelTypeID', 'FlowRate', 'Status'
+        'DispenserID',
+        'NozzleNumber',
+        'FuleTypeID',
+        'FlowRate',
+        'LastCalibationDate',
+        'Status',
+        'created_by',
+        'updated_by',
     ];
+
+    // 🔁 ความสัมพันธ์
 
     public function dispenser()
     {
-        return $this->belongsTo(Dispenser::class, 'DispenserID', 'DispenserID');
+        return $this->belongsTo(Dispenser::class, 'DispenserID');
     }
 
-    public function fuelType()
+    public function fuleType()
     {
-        return $this->belongsTo(FuelType::class, 'FuelTypeID', 'FuelTypeID');
+        return $this->belongsTo(FuelType::class, 'FuleTypeID');
+    }
+
+    public function inspectionRecords()
+    {
+        return $this->hasMany(WorkInspectionRecord::class, 'NozzleID');
+    }
+
+    public function workNozzles()
+    {
+        return $this->hasMany(WorkNozzle::class, 'NozzleID');
     }
 }

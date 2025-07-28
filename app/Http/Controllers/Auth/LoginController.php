@@ -71,13 +71,14 @@ class LoginController extends Controller
         \Auth::login($user, $request->filled('remember'));
 
         $permissions = \DB::connection('sqlsrv_secondary')
-            ->table('role_menu_permissions')
-            ->join('menus', 'menus.MenuID', '=', 'role_menu_permissions.MenuID')
-            ->where('role_menu_permissions.RoleID', $userInSqlsrv->RoleID)
+            ->table('sys_role_menu_permissions')
+            ->join('sys_menus', 'sys_menus.MenuID', '=', 'sys_role_menu_permissions.MenuID')
+            ->where('sys_role_menu_permissions.RoleID', $userInSqlsrv->RoleID)
             ->where('CanView', 1)
-            ->select('menus.MenuName', 'menus.Route')
+            ->select('sys_menus.MenuName', 'sys_menus.Route')
             ->get();
         session(['menu_permissions' => $permissions]);
         return true;
     }
 }
+

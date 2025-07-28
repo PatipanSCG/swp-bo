@@ -27,7 +27,7 @@ class CheckMenuPermission
         });
 
         \Log::info("Route {$currentPath} allowed? " . ($allowed ? 'YES' : 'NO'));
-// dd($permissions);exit;
+dd($$currentPath);exit;
         if (!$allowed) {
             abort(403, 'ไม่มีสิทธิ์เข้าถึงเมนูนี้');
         }
