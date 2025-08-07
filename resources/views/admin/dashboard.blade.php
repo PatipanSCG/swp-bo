@@ -40,7 +40,7 @@ function loadStations(type = '', keyword = '') {
     $('#station-container').html('<div class="text-center">⏳ กำลังโหลดข้อมูล...</div>');
 
     $.ajax({
-        url: `{{ env("APP_URL") }}admin/stations/data`,
+        url: `{{ env("APP_URL") }}stations/data`,
         data: {
             type: type,
             keyword: keyword,
@@ -70,9 +70,10 @@ function renderStations(data) {
     let html = '';
     let now = new Date();
 
-    data.sort((a, b) => new Date(a.license_expired_date) - new Date(b.license_expired_date))
+    data.sort((a, b) => new Date(a.latest_calibration_date) - new Date(b.latest_calibration_date))
         .forEach(function (station) {
-            let expiredDate = new Date(station.license_expired_date);
+            console.log(station)
+            let expiredDate = new Date(station.latest_calibration_date);
             let diffDays = Math.ceil((expiredDate - now) / (1000 * 60 * 60 * 24));
 
             let color = 'success';
@@ -81,21 +82,25 @@ function renderStations(data) {
             else if (diffDays <= 30) color = 'warning';
             else if (diffDays <= 60) color = 'info';
 
-            html += `
-                <div class="col-md-3 mb-4">
-                    <div class="card border-${color} text-${color}">
-                        <div class="card-header bg-${color} text-white"><h5>${station.StationName}</h5></div>
-                        <div class="card-body">
-                            <p>จำนวนหัวจ่าย: ${station.DispenserCount}</p>
-                            <p>วันหมดอายุ: ${formatDate(expiredDate)}</p>
-                            <p>ที่อยู่: ต.${station.SubDistrict} อ.${station.District} จ.${station.Province}</p>
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-info">ดูข้อมูล</button>
-                        </div>
-                    </div>
-                </div>`;
-        });
+           const subdistrictName = station.subdistrict?.NameInThai || '-';
+    const districtName = station.district?.NameInThai || '-';
+    const provinceName = station.province?.NameInThai || '-';
+
+    html += `
+        <div class="col-md-3 mb-4">
+            <div class="card border-${color} text-${color}">
+                <div class="card-header bg-${color} text-white"><h5>${station.StationName}</h5></div>
+                <div class="card-body">
+                    <p>จำนวนหัวจ่าย: ${station.nozzle_count}</p>
+                    <p>วันหมดอายุ: ${formatDate(expiredDate)}</p>
+                    <p>ที่อยู่: ต.${subdistrictName} อ.${districtName} จ.${provinceName}</p>
+                </div>
+                <div class="card-footer">
+                    <a taget="_blank" href="/stations/${station.StationID}/detail" class="btn btn-success btn-sm">ดูข้อมูล</a>
+                </div>
+            </div>
+        </div>`;
+});
 
     $('#station-container').html(html);
 }

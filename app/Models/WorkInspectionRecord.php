@@ -7,18 +7,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class WorkInspectionRecord extends Model
 {
-    protected $connection = 'sqlsrv_secondary';
     use HasFactory;
 
-    protected $table = 'workinspectionrecord';
+    protected $connection = 'sqlsrv_secondary'; // เปลี่ยนตามชื่อ connection ของคุณ
+    protected $table = 'WorkInspectionRecord';
     protected $primaryKey = 'WIRID';
-
-    public $timestamps = true;
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
-
     public $incrementing = true;
     protected $keyType = 'int';
+    public $timestamps = true;
+
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
         'WorkID',
@@ -28,43 +27,37 @@ class WorkInspectionRecord extends Model
         'NozzleNumber',
         'MitterBegin',
         'MitterEnd',
-        'BeforADJ_5L',
-        'BeforADJ_20L',
-        'AfterADJ_5L_1',
-        'AfterADJ_5L_2',
-        'AfterADJ_5L_3',
-        'AfterADJ_5L_MPE',
-        'AfterADJ_20L_1',
-        'AfterADJ_20L_2',
-        'AfterADJ_20L_3',
-        'AfterADJ_20L_MPE',
-        'Condition_MPE',
-        'Condition_DevitionValue',
-        'Condition_DevitionRange',
-        'Condition_Retest20L',
-        'Summary_Correct',
-        'Summary_Wrong',
-        'Standard',
-        'Pliers',
-        'CerMark_Pliers',
-        'CerMark_Seal',
-        'ExpirationDate',
-        'K_factor',
         'Status',
         'created_by',
         'updated_by',
+        'MMQ_1L',
+        'MMQ_5L',
+        'MPE_5L',
+        'Repeat5L_1',
+        'Repeat5L_2',
+        'Repeat5L_3',
+        'VR_1',
+        'VR_2',
+        'VR_3',
+        'VR_4',
+        'VR_5',
+        'SNS_True',
+        'SNS_False',
+        'KarudaNumber',
+        'SealNumber',
+        'ExpirationDate',
+        'KFactor'
     ];
 
-    // 🔁 ความสัมพันธ์
-
+    // 🔁 ตัวอย่างความสัมพันธ์
     public function work()
     {
         return $this->belongsTo(Work::class, 'WorkID');
     }
 
-    public function station()
+    public function nozzle()
     {
-        return $this->belongsTo(Station::class, 'StationID');
+        return $this->belongsTo(Nozzle::class, 'NozzleID');
     }
 
     public function dispenser()
@@ -72,8 +65,9 @@ class WorkInspectionRecord extends Model
         return $this->belongsTo(Dispenser::class, 'DispenserID');
     }
 
-    public function nozzle()
+    public function station()
     {
-        return $this->belongsTo(Nozzle::class, 'NozzleID');
+        return $this->belongsTo(Station::class, 'StationID');
     }
+    
 }

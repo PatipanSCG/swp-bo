@@ -73,6 +73,12 @@
                     <span>{{ __('Employees') }}</span>
                 </a>
             </li>
+            <li class="nav-item {{ Nav::isRoute('employees.teams') }}">
+                <a class="nav-link" href="{{ route('employees.teams') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>{{ __('teams') }}</span>
+                </a>
+            </li>
              <li class="nav-item {{ Nav::isRoute('stations.index') }}">
                 <a class="nav-link" href="{{ route('stations.index') }}">
                     <i class="fas fa-fw fa-user"></i>
@@ -113,16 +119,9 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                   <button type="button" class="btn btn-outline-secondary" onclick="window.history.back();">
+        ⬅️ ย้อนกลับ
+    </button>
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -345,6 +344,7 @@
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
        @yield('scripts')
 </body>
 

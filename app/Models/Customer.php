@@ -46,4 +46,38 @@ class Customer extends Model
         'created_by',
         'updated_by',
     ];
+   
+    public static function customerTypeList()
+    {
+        return [
+            1 => 'ห้างหุ้นส่วนสามัญ',
+            2 => 'ห้างหุ้นส่วนจำกัด',
+            3 => 'บริษัทจำกัด',
+            4 => 'บริษัทมหาชนจำกัด',
+            5 => 'สหกรณ์',
+            6 => 'มูลนิธิ',
+            7 => 'สมาคม',
+            8 => 'องค์กรของรัฐ',
+            9 => 'นิติบุคคลต่างประเทศ',
+        ];
+    }
+    public function getCustomerTypeNameAttribute()
+    {
+        return self::customerTypeList()[$this->CustomerType] ?? 'ไม่ระบุ';
+    }
+     public function province()
+    {
+        return $this->belongsTo(Province::class, 'Province', 'code');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'Distric', 'code');
+    }
+
+    public function subdistrict()
+    {
+        return $this->belongsTo(Subdistrict::class, 'Subdistric', 'code');
+    }
+
 }

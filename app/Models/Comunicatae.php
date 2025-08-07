@@ -24,6 +24,7 @@ class Comunicatae extends Model
         'StationID',
         'CustomerID',
         'UserID',
+        'ContactID',
         'ComunicataeTypeID',
         'ComunicataeDetail',
         'Status',
@@ -41,6 +42,14 @@ class Comunicatae extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'CustomerID');
+    }
+    public function user()
+    {
+        return $this->belongsTo(UserSystem::class, 'UserID', 'UserID');
+    }
+public function contact()
+    {
+        return $this->belongsTo(Contact::class, 'ContactID','ContactID');
     }
 
     public function type()

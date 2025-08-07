@@ -26,6 +26,10 @@ class Nozzle extends Model
         'FuleTypeID',
         'FlowRate',
         'LastCalibationDate',
+        'MMQ',
+        'Qmax',
+        'Qmin',
+        'SN',
         'Status',
         'created_by',
         'updated_by',
@@ -40,7 +44,7 @@ class Nozzle extends Model
 
     public function fuleType()
     {
-        return $this->belongsTo(FuelType::class, 'FuleTypeID');
+        return $this->belongsTo(FuelType::class, 'FuleTypeID', 'FuleTypeID');
     }
 
     public function inspectionRecords()
@@ -52,4 +56,9 @@ class Nozzle extends Model
     {
         return $this->hasMany(WorkNozzle::class, 'NozzleID');
     }
+    public function inspectionRecordForWork($workID)
+{
+    return $this->hasOne(WorkInspectionRecord::class, 'NozzleID', 'NozzleID')
+                ->where('WorkID', $workID);
+}
 }

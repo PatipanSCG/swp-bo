@@ -32,4 +32,10 @@ class ComunicataeType extends Model
     {
         return $this->hasMany(Comunicatae::class, 'ComunicataeTypeID');
     }
+    public static function list()
+    {
+        return self::where('Status', 1)
+            ->orderBy('ComunicataeName')
+            ->get(['ComunicataeTypeID', 'ComunicataeName']);
+    }
 }

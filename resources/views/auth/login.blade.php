@@ -11,7 +11,7 @@
                         <div class="col-lg-6">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">{{ __('Login') }}</h1>
+                                    <h1 class="h4 text-gray-900 mb-4">ยินดีต้อนรับสู้ระบบบริหารจัดการงาน SWP</h1>
                                 </div>
 
                                 @if ($errors->any())
@@ -50,7 +50,7 @@
 
                                     <hr>
 
-                                    <div class="form-group">
+                                    <!-- <div class="form-group">
                                         <button type="button" class="btn btn-github btn-user btn-block">
                                             <i class="fab fa-github fa-fw"></i> {{ __('Login with GitHub') }}
                                         </button>
@@ -66,7 +66,7 @@
                                         <button type="button" class="btn btn-facebook btn-user btn-block">
                                             <i class="fab fa-facebook-f fa-fw"></i> {{ __('Login with Facebook') }}
                                         </button>
-                                    </div>
+                                    </div> -->
                                 </form>
 
                                 <hr>

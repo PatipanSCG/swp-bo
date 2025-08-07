@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class FuelType extends Model
 {
     protected $connection = 'sqlsrv_secondary';
-    protected $table = 'FuelTypeID';
-    protected $primaryKey = 'FuelTypeID';
+    protected $table = 'FuleType';
+    protected $primaryKey = 'FuleTypeID';
         // เปิดใช้งาน timestamps ถ้าคุณมี created_at / updated_at
     public $timestamps = true;
 
@@ -22,10 +22,10 @@ class FuelType extends Model
     // กำหนดชนิดข้อมูลของ primary key
     protected $keyType = 'int';
 
-    protected $fillable = ['FuelTypeName',  'Status'];
+    protected $fillable = ['FuleTypeName',  'Status'];
 
     public function nozzles()
     {
-        return $this->hasMany(Nozzle::class, 'FuelTypeID', 'FuelTypeID');
+        return $this->hasMany(Nozzle::class, 'FuleTypeID', 'FuleTypeID');
     }
 }

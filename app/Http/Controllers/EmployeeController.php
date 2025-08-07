@@ -15,10 +15,19 @@ class EmployeeController extends Controller
 
         return view('employee.index', compact('employees'));
     }
-
+    public function getdataforen(){
+        $employees = User::where('RowStatus', 1)
+        ->where('DeptKey','43f90294-6000-11e8-a1fc-8cec4b307d55')
+        ->select('EmpCode', 'NameTH', 'NameEN','Email','Position')
+        ->get();
+         return response()->json(['data' => $employees]);
+        
+    }
     public function getData()
     {
-        $employees = User::where('RowStatus', 1)->get();
+        $employees = User::where('RowStatus', 1)
+        
+        ->get();
 
         // ดึง UserName จากระบบ SWP (UserSystem)
         $system_usernames = UserSystem::pluck('UserName')->toArray();
@@ -27,6 +36,16 @@ class EmployeeController extends Controller
             $employee->SWPis = in_array($employee->UserName, $system_usernames) ? 1 : 0;
             return $employee;
         });
+        return response()->json(['data' => $employees]);
+    }
+    public function getDatainsystem()
+    {
+        $employees = UserSystem::get();
+
+        // ดึง UserName จากระบบ SWP (UserSystem)
+        $system_usernames = UserSystem::pluck('UserName')->toArray();
+        // Map เพิ่มสถานะเข้าไปในแต่ละพนักงาน
+        
         return response()->json(['data' => $employees]);
     }
     public function add(Request $request, $empCode)
@@ -50,5 +69,10 @@ class EmployeeController extends Controller
         $user->save();
 
         return redirect()->back()->with('success', 'เพิ่มพนักงานเข้าสู่ระบบสำเร็จ');
+    }
+    
+    public function teams(){
+      
+        return view('employee.team');
     }
 }

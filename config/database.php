@@ -44,6 +44,19 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
         ],
+        'sqlsrv_NAV' => [
+            'driver' => 'sqlsrv',
+            'host' => env('SQLSRV_HOST_NAV', 'localhost'),
+            'database' => env('SQLSRV_DATABASE_NAV', 'forge'),
+            'username' => env('SQLSRV_USERNAME_NAV', 'forge'),
+            'password' => env('SQLSRV_PASSWORD_NAV', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'options'   => [
+            // ต้องใช้ SQLSRV driver ที่สนับสนุน option นี้
+            PDO::SQLSRV_ATTR_ENCODING => PDO::SQLSRV_ENCODING_UTF8,
+        ],
+        ],
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),

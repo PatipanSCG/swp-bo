@@ -86,9 +86,22 @@ class Station extends Model
     {
         return $this->belongsTo(Subdistrict::class, 'Subdistric', 'code');
     }
-    
+
     public function nozzle()
     {
         return $this->hasManyThrough(Nozzle::class, Dispenser::class, 'StationID', 'DispenserID');
+    }
+    public function nozzles()
+    {
+        return $this->hasManyThrough(
+            Nozzle::class,        // Model ปลายทาง
+            Dispenser::class,     // Model กลาง
+
+            'StationID',          // Foreign key on dispensers table
+            'DispenserID',        // Foreign key on nozzles table
+
+            'StationID',          // Local key on stations table
+            'DispenserID'         // Local key on dispensers table
+        );
     }
 }

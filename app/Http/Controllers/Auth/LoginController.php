@@ -69,7 +69,9 @@ class LoginController extends Controller
 
         // STEP 3: Login สำเร็จ
         \Auth::login($user, $request->filled('remember'));
-
+            session([
+                'user_system' => (array) $userInSqlsrv, // แปลงเป็น array ก่อนเก็บ
+            ]);
         $permissions = \DB::connection('sqlsrv_secondary')
             ->table('sys_role_menu_permissions')
             ->join('sys_menus', 'sys_menus.MenuID', '=', 'sys_role_menu_permissions.MenuID')

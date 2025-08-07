@@ -13,6 +13,34 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-2">
+                <input type="text" id="filter-name" class="form-control" placeholder="ชื่อสถานี">
+            </div>
+            <div class="col-md-2">
+                <input type="text" id="filter-taxid" class="form-control" placeholder="เลขผู้เสียภาษี">
+            </div>
+            <div class="col-md-2">
+                <select id="filter-brand" class="form-control">
+                    <option value="">-- แบรนด์ --</option>
+                    @foreach($brands as $brand)
+                    <option value="{{ $brand->BrandID }}">{{ $brand->BrandName }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="filter-province" class="form-control">
+                    <option value="">-- จังหวัด --</option>
+                    @foreach($provinces as $prov)
+                    <option value="{{ $prov->NameInThai }}">{{ $prov->NameInThai }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button class="btn btn-primary" id="btn-filter">ค้นหา</button>
+            </div>
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered" id="stationTable" width="100%" cellspacing="0">
                 <thead>
@@ -23,9 +51,7 @@
                         <th>ที่อยู่</th>
                         <th>จังหวัด</th> <!-- เพิ่มคอลัมน์นี้ -->
                         <th>อำเภอ</th>
-
                         <th>ตำบล</th>
-
                         <th>วันที่หมดอายุ</th> <!-- เพิ่มคอลัมน์นี้ -->
                         <th>จำนวนตู้จ่าย/จำนวนหัวจ่าย</th> <!-- เพิ่มคอลัมน์นี้ -->
                         <th>จัดการ</th> <!-- เพิ่มคอลัมน์นี้ -->
@@ -124,8 +150,16 @@
 <script>
     $(document).ready(function() {
         $('#stationTable').DataTable({
-            ajax: '{{env('
-            APP_URL ')}}stations/data',
+            ajax: {
+                url: '/stations/data',
+                data: function(d) {
+                    d.name = $('#filter-name').val();
+                    d.taxid = $('#filter-taxid').val();
+                    d.province = $('#filter-province').val();
+                    d.brand = $('#filter-brand').val();
+                }
+            },
+            rowId: 'StationID',
             columns: [{
                     data: null,
                     render: function(data, type, row, meta) {
@@ -137,16 +171,16 @@
                 },
                 {
                     data: 'brand.BrandName'
-                }, // ยี่ห้อ
+                },
                 {
                     data: 'Address'
                 },
                 {
                     data: 'province.NameInThai'
-                }, // จังหวัด
+                },
                 {
                     data: 'district.NameInThai'
-                }, // อำเภอ
+                },
                 {
                     data: 'subdistrict.NameInThai'
                 },
@@ -155,16 +189,15 @@
                 },
                 {
                     data: null,
-                    render: function(data, type, row, meta) {
-                        let dataretrun;
-                        return row.dispensers_count + '/ ' + row.nozzle_count;
+                    render: function(data, type, row) {
+                        return row.dispensers_count + ' / ' + row.nozzle_count;
                     }
                 },
                 {
                     data: null,
-                    render: function(data, type, row, meta) {
-                        let dataretrun;
-                        return '<a href="/stations/' + row.StationID + '/dispensers" class="btn btn-info btn-sm">จัดการตู้จ่ายจ่าย</a> | <a href="/stations/' + row.StationID + '/detail" class="btn btn-success btn-sm">ดูข้อมูล</a>';
+                    render: function(data, type, row) {
+                        return '<a href="/stations/' + row.StationID + '/dispensers" class="btn btn-info btn-sm">จัดการตู้จ่าย</a> | ' +
+                            '<a href="/stations/' + row.StationID + '/detail" class="btn btn-success btn-sm">ดูข้อมูล</a>';
                     }
                 }
             ],
@@ -183,13 +216,16 @@
                 }
             }
         });
+
         $('#btn-addstation').on('click', function() {
 
             $('#addStationModal').modal('show');
 
         });
 
-
+        $('#btn-filter').on('click', function() {
+            $('#stationTable').DataTable().ajax.reload();
+        });
 
         $('#addStationForm').on('submit', function(e) {
             e.preventDefault();

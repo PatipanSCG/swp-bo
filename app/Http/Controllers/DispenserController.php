@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Station;
 use App\Models\Dispenser;
+use App\Models\Nozzle;
 
 class DispenserController extends Controller
 {
@@ -25,6 +26,16 @@ class DispenserController extends Controller
             ->get();
 
         return response()->json(['data' => $dispensers]);
-        return response()->json(['data' => $dispensers]);
+    
+    }
+    public function getDataNozzles($DispenserID)
+    {
+
+        $Nozzles = Nozzle::with(['FuleType:FuleTypeID,FuleTypeName'])
+        ->where('DispenserID', $DispenserID)
+            ->get();
+
+        return response()->json(['data' => $Nozzles]);
+    
     }
 }

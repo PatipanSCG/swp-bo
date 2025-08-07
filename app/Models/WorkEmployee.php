@@ -35,8 +35,8 @@ class WorkEmployee extends Model
         return $this->belongsTo(Work::class, 'WorkID');
     }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'UserID');
-    }
+   public function team()
+{
+    return $this->belongsTo(SysTechnicianTeam::class, 'UserID', 'id'); // UserID ในที่นี้คือ team_id จริงๆ
+}
 }
