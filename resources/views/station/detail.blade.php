@@ -312,7 +312,7 @@
 <script>
     $(document).ready(function() {
         let sum = 0;
-        const stationId = window.location.pathname.split('/')[2];
+        const stationId = $('#stationid').val();
         loadDispensers(stationId);
         $('#contactsTable').DataTable({
             processing: true,
