@@ -96,7 +96,7 @@
 <script>
     $(document).ready(function() {
         $('#employeeTable').DataTable({
-            ajax: '{{env('APP_URL')}}employees/data',
+            ajax: window.APP_URL+ '/employees/data',
             columns: [{
                     data: null,
                     render: function(data, type, row, meta) {

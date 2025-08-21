@@ -37,7 +37,7 @@
 $(document).ready(function () {
     $('#works-table').DataTable({
         ajax: {
-            url: "{{env('APP_URL')}}api/works", // หรือ "/api/works" ถ้าไม่ได้ตั้งชื่อ route
+            url: window.APP_URL+"/api/works", // หรือ "/api/works" ถ้าไม่ได้ตั้งชื่อ route
             dataSrc: 'data'
         },
         columns: [
@@ -53,9 +53,9 @@ $(document).ready(function () {
             {
                     data: null,
                     render: function(data, type, row) {
-                        return  '<a href="{{env('APP_URL')}}stations/' + row.StationID + '/detail" class="btn btn-success btn-sm">ดูข้อมูลสถานี</a> |'+
-                        '<a href="{{env('APP_URL')}}stations/' + row.StationID + '/CheckDispenser" class="btn btn-info btn-sm">ตรวจสภาพตู้</a> |'+
-                            '<a href="{{env('APP_URL')}}works/' + row.WorkID + '/detail" class="btn btn-success btn-sm">บันทึกการตรวจ</a> ';
+                        return  '<a href="'+window.APP_URL+'stations/' + row.StationID + '/detail" class="btn btn-success btn-sm">ดูข้อมูลสถานี</a> |'+
+                        '<a href="'+window.APP_URL+'stations/' + row.StationID + '/CheckDispenser" class="btn btn-info btn-sm">ตรวจสภาพตู้</a> |'+
+                            '<a href="'+window.APP_URL+'works/' + row.WorkID + '/detail" class="btn btn-success btn-sm">บันทึกการตรวจ</a> ';
                     }
                 }
         ],

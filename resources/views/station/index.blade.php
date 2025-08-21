@@ -151,7 +151,7 @@
     $(document).ready(function() {
         $('#stationTable').DataTable({
             ajax: {
-                url: '{{env('APP_URL')}}stations/data',
+                url: window.APP_URL+'/stations/data',
                 data: function(d) {
                     d.name = $('#filter-name').val();
                     d.taxid = $('#filter-taxid').val();
@@ -196,8 +196,8 @@
                 {
                     data: null,
                     render: function(data, type, row) {
-                        return '<a href="{{env('APP_URL')}}stations/' + row.StationID + '/dispensers" class="btn btn-info btn-sm">จัดการตู้จ่าย</a> | ' +
-                            '<a href="{{env('APP_URL')}}stations/' + row.StationID + '/detail" class="btn btn-success btn-sm">ดูข้อมูล</a>';
+                        return '<a href="'+window.APP_URL+'/stations/' + row.StationID + '/dispensers" class="btn btn-info btn-sm">จัดการตู้จ่าย</a> | ' +
+                            '<a href="'+window.APP_URL+'/stations/' + row.StationID + '/detail" class="btn btn-success btn-sm">ดูข้อมูล</a>';
                     }
                 }
             ],
@@ -232,7 +232,7 @@
             e.preventDefault();
 
             $.ajax({
-                url: '{{env('APP_URL')}}stations/store',
+                url: window.APP_URL+'/stations/store',
                 method: 'POST',
                 data: $(this).serialize(),
                 success: function(response) {
@@ -254,7 +254,7 @@
 
             if (provinceId) {
                 $.ajax({
-                    url: `{{env('APP_URL')}}api/provinces/${provinceId}/districts`,
+                    url: window.APP_URL+`/api/provinces/${provinceId}/districts`,
                     type: 'GET',
                     success: function(res) {
                         $('#ip-district').empty().append('<option value="">-- เลือกอำเภอ --</option>');
@@ -273,7 +273,7 @@
             console.log(districtId);
             if (districtId) {
                 $.ajax({
-                    url: `{{env('APP_URL')}}api/districts/${districtId}/subdistricts`,
+                    url: window.APP_URL+`/api/districts/${districtId}/subdistricts`,
                     type: 'GET',
                     success: function(res) {
                         console.log(res)

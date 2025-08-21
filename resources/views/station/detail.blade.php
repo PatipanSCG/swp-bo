@@ -319,7 +319,7 @@
             serverSide: true,
             searching: false,
             ajax: {
-                url: '{{env('APP_URL')}}contacts/getdata',
+                url: window.APP_URL+'/contacts/getdata',
                 data: {
                     station_id: stationId
                 }
@@ -366,7 +366,7 @@
 
         $('#table-communication').DataTable({
             ajax: {
-                url: `{{env('APP_URL')}}comunicatae/${stationId}`,
+                url: window.APP_URL+`/comunicatae/${stationId}`,
                 method: 'GET',
                 dataSrc: '' // ถ้า API ส่งกลับมาเป็น array ไม่ต้องเจาะ path เช่น `data.items`
             },
@@ -602,7 +602,7 @@
         });
 
         $.ajax({
-            url: `{{env('APP_URL')}}stations/countNozzles/${stationid}`,
+            url: window.APP_URL+`/stations/countNozzles/${stationid}`,
             type: 'GET',
             success: function(response) {
                 let nozzleCount = response;
@@ -662,7 +662,7 @@
         let sum = 0;
 
         $.ajax({
-            url: `{{env('APP_URL')}}calculate-charge/${nozzleCount}`,
+            url: window.APP_URL+`/calculate-charge/${nozzleCount}`,
             type: 'GET',
             success: function(res) {
                 let html = `
@@ -682,12 +682,12 @@
                 $('#qt-service-table tbody').html(html);
 
                 $.ajax({
-                    url: `{{env('APP_URL')}}calculate-distance/${last}/${long}`,
+                    url: window.APP_URL+`/calculate-distance/${last}/${long}`,
                     type: 'GET',
                     success: function(res) {
                         const distance_km = res.distance_km;
                         $.ajax({
-                            url: `{{env('APP_URL')}}calculate-travel/${distance_km}`,
+                            url: window.APP_URL+`/calculate-travel/${distance_km}`,
                             type: 'GET',
                             success: function(res) {
                                 let html = `
@@ -761,7 +761,7 @@
         const map_url = $('#ip-linkgooglemap').val();
         console.log(station_id);
         $.ajax({
-            url: `{{env('APP_URL')}}stations/updatelatlong`,
+            url: window.APP_URL+`/stations/updatelatlong`,
             type: "POST",
             data: {
                 _token: '{{ csrf_token() }}',
@@ -810,7 +810,7 @@
 
     function loadDispensers(stationId) {
         $.ajax({
-            url: `{{env('APP_URL')}}stations/${stationId}/dispensers/data`,
+            url: window.APP_URL+`/stations/${stationId}/dispensers/data`,
             method: 'GET',
             success: function(dispensers) {
                 renderDispenserAccordion(stationId, dispensers.data);
@@ -854,7 +854,7 @@
 
     function loadNozzles(dispenserId, containerId) {
         $.ajax({
-            url: `{{env('APP_URL')}}stations/dispensers/${dispenserId}/nozzle/data`,
+            url: window.APP_URL+`/stations/dispensers/${dispenserId}/nozzle/data`,
             method: 'GET',
             success: function(res) {
                 let html = `
@@ -895,7 +895,7 @@
         const formData = $(this).serialize();
 
         $.ajax({
-            url: '{{env('APP_URL')}}comunicatae',
+            url: window.APP_URL+'/comunicatae',
             method: 'POST',
             data: formData,
             headers: {
@@ -939,14 +939,14 @@
     $(document).on('submit', '#dispenser-form', function(e) {
         e.preventDefault();
         const data = $(this).serialize();
-        $.post(`/api/dispensers`, data, function() {
+        $.post(window.APP_URL+'/api/dispensers', data, function() {
             alert('เพิ่มตู้จ่ายสำเร็จ');
             loadDispensers(1); // โหลดใหม่
         });
     });
 
     function showAddNozzleForm(stationId, dispenserId, collapseId) {
-        $.get('/api/fuletype/list', function(fuelTypes) {
+        $.get(window.APP_URL+'/api/fuletype/list', function(fuelTypes) {
             let fuelOptions = fuelTypes.map(f => `<option value="${f.FuleTypeID}">${f.FuleTypeName}</option>`).join('');
 
             const formHtml = `
@@ -997,7 +997,7 @@
             $(`#nozzle-form-${dispenserId}`).on('submit', function(e) {
                 e.preventDefault();
                 const data = $(this).serialize(); // DispenserID รวมมาแล้วใน hidden
-                $.post(`/api/nozzles`, data, function() {
+                $.post(window.APP_URL+`/api/nozzles`, data, function() {
                     Swal.fire({
                         icon: 'success',
                         title: 'บันทึกสำเร็จ',

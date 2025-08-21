@@ -41,7 +41,7 @@
 <script>
     $(document).ready(function() {
         $('#dispenserTable').DataTable({
-            ajax: '{{env('APP_URL ')}}dispensers/data',
+            ajax: window.APP_URL+ '/dispensers/data',
             columns: [{
                     data: null,
                     render: function(data, type, row, meta) {

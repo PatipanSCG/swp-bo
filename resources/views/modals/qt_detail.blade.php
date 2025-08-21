@@ -222,7 +222,7 @@
         });
 
         $.ajax({
-            url: '/quotations/store',
+            url: window.APP_URL+'/quotations/store',
             method: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),
@@ -474,7 +474,7 @@
     // ฟังก์ชันสำหรับโหลดรายการ Promotion
     function loadPromotionList() {
         $.ajax({
-            url: '/api/promotions',
+            url: window.APP_URL+'/api/promotions',
             method: 'GET',
             dataType: 'json',
             success: function(response) {

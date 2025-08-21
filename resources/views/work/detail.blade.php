@@ -153,7 +153,7 @@
 
         $('#works-table').DataTable({
            ajax: {
-                url: `{{env('APP_URL')}}api/works/${WorkID}`,
+                url: window.APP_URL+`/api/works/${WorkID}`,
                 // data: function(d) {
                 //     d.name = $('#filter-name').val();
                 //     d.taxid = $('#filter-taxid').val();
@@ -239,7 +239,7 @@
             }
         });
         document.getElementById('btn-downloadlabel').addEventListener('click', function () {
-        window.location.href = `{{env('APP_URL')}}api/export-nozzles/${stationID}`;
+        window.location.href = window.APP_URL+`/api/export-nozzles/${stationID}`;
     });
     });
      
@@ -269,7 +269,7 @@ $('#inspectionForm').submit(function(e) {
     e.preventDefault();
     const formData = $(this).serialize();
 
-    $.post('{{env('APP_URL')}}api/inspection-records', formData, function(response) {
+    $.post(window.APP_URL+'/api/inspection-records', formData, function(response) {
         alert('บันทึกสำเร็จ');
         $('#inspectionModal').modal('hide');
         $('#works-table').DataTable().ajax.reload();

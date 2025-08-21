@@ -93,7 +93,7 @@
   $(function() {
     const table = $('#team-table').DataTable({
       ajax: {
-        url: '{{env('APP_URL')}}teams',
+        url: window.APP_URL+ '/teams',
         dataSrc: '' // ⭐️ บอกว่า array อยู่ root ของ JSON เลย
       },
 
@@ -127,7 +127,7 @@
       e.preventDefault();
 
       $.ajax({
-        url: '{{env('APP_URL')}}teams/store',
+        url: window.APP_URL+ '/teams/store',
         type: 'POST',
         data: $(this).serialize(),
         headers: {
@@ -166,7 +166,7 @@
       const teamId = $(this).data('id');
       $('#memberModal').modal('show');
 
-      $.get(`/teams/${teamId}/members`, function(res) {
+      $.get(window.APP_URL+ `/teams/${teamId}/members`, function(res) {
         let html = '';
         res.members.forEach(m => {
           html += `
@@ -182,7 +182,7 @@
         $('#btn-add-member').data('team-id', res.id);
       });
 
-      $.get('/employees/getDatainsystem', function(res) {
+      $.get(window.APP_URL+'/employees/getDatainsystem', function(res) {
         $('#employee-select').empty();
         res.data.forEach(emp => {
           $('#employee-select').append(`<option value="${emp.UserID}">${emp.NameTH}</option>`);
@@ -196,7 +196,7 @@
   const teamId = $(this).data('team-id');
 
   $.post({
-    url: `{{env('APP_URL')}}teams/add-member`,
+    url: window.APP_URL+`/teams/add-member`,
     data: {
       user_id: userId,
       team_id: teamId,
@@ -255,7 +255,7 @@
       }).then((result) => {
         if (result.isConfirmed) {
           $.ajax({
-            url: `{{env('APP_URL')}}teams/${id}`,
+            url: window.APP_URL+`/teams/${id}`,
             type: 'DELETE',
             headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -292,7 +292,7 @@
       }).then((result) => {
         if (result.isConfirmed) {
           $.ajax({
-            url: `{{env('APP_URL')}}teams/remove-member/${id}`,
+            url: window.APP_URL+`/teams/remove-member/${id}`,
             type: 'DELETE',
             headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

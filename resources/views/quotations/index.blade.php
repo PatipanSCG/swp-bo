@@ -80,7 +80,7 @@ $(document).ready(function() {
         processing: true,
         serverSide: false,
         ajax: {
-            url: '{{env('APP_URL')}}api/quotations',
+            url: window.APP_URL+'/api/quotations',
             data: function(d) {
                 d.status = $('#filter-status').val();
                 d.date_from = $('#filter-date-from').val();
@@ -156,17 +156,17 @@ $(document).ready(function() {
     // Handle actions (view, edit, delete, download PDF)
     $(document).on('click', '.btn-view-quotation', function() {
         var id = $(this).data('id');
-        window.open('{{env('APP_URL')}}quotations/' + id, '_blank');
+        window.open(window.APP_URL+'/quotations/' + id, '_blank');
     });
 
     $(document).on('click', '.btn-edit-quotation', function() {
         var id = $(this).data('id');
-        window.location.href = '{{env('APP_URL')}}quotations/' + id + '/edit';
+        window.location.href = window.APP_URL+'/quotations/' + id + '/edit';
     });
 
     $(document).on('click', '.btn-download-pdf', function() {
         var id = $(this).data('id');
-        window.open('{{env('APP_URL')}}quotations/' + id + '/pdf', '_blank');
+        window.open(window.APP_URL+'/quotations/' + id + '/pdf', '_blank');
     });
 
     $(document).on('click', '.btn-delete-quotation', function() {
@@ -185,7 +185,7 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '{{env('APP_URL')}}quotations/' + id,
+                    url: window.APP_URL+'/quotations/' + id,
                     method: 'DELETE',
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content')

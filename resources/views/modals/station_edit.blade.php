@@ -80,7 +80,7 @@
 
             if (provinccode) {
                 $.ajax({
-                    url: `/api/provinces/${provinccode}/districts`,
+                    url: window.APP_URL+`/api/provinces/${provinccode}/districts`,
                     type: 'GET',
                     success: function(res) {
                         $('#ip-district').empty().append('<option value="">-- เลือกอำเภอ --</option>');
@@ -99,7 +99,7 @@
             console.log(districtId);
             if (districtId) {
                 $.ajax({
-                    url: `/api/districts/${districtId}/subdistricts`,
+                    url: window.APP_URL+`/api/districts/${districtId}/subdistricts`,
                     type: 'GET',
                     success: function(res) {
                         console.log(res)
