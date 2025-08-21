@@ -239,7 +239,7 @@
             }
         });
         document.getElementById('btn-downloadlabel').addEventListener('click', function () {
-        window.location.href = `/api/export-nozzles/${stationID}`;
+        window.location.href = `{{env('APP_URL')}}api/export-nozzles/${stationID}`;
     });
     });
      
@@ -269,7 +269,7 @@ $('#inspectionForm').submit(function(e) {
     e.preventDefault();
     const formData = $(this).serialize();
 
-    $.post('/api/inspection-records', formData, function(response) {
+    $.post('{{env('APP_URL')}}api/inspection-records', formData, function(response) {
         alert('บันทึกสำเร็จ');
         $('#inspectionModal').modal('hide');
         $('#works-table').DataTable().ajax.reload();

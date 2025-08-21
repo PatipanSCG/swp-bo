@@ -127,7 +127,7 @@
       e.preventDefault();
 
       $.ajax({
-        url: '/teams/store',
+        url: '{{env('APP_URL')}}teams/store',
         type: 'POST',
         data: $(this).serialize(),
         headers: {
@@ -196,7 +196,7 @@
   const teamId = $(this).data('team-id');
 
   $.post({
-    url: `/teams/add-member`,
+    url: `{{env('APP_URL')}}teams/add-member`,
     data: {
       user_id: userId,
       team_id: teamId,
@@ -255,7 +255,7 @@
       }).then((result) => {
         if (result.isConfirmed) {
           $.ajax({
-            url: `/teams/${id}`,
+            url: `{{env('APP_URL')}}teams/${id}`,
             type: 'DELETE',
             headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -292,7 +292,7 @@
       }).then((result) => {
         if (result.isConfirmed) {
           $.ajax({
-            url: `/teams/remove-member/${id}`,
+            url: `{{env('APP_URL')}}teams/remove-member/${id}`,
             type: 'DELETE',
             headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

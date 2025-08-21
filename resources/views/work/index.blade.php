@@ -53,9 +53,9 @@ $(document).ready(function () {
             {
                     data: null,
                     render: function(data, type, row) {
-                        return  '<a href="/stations/' + row.StationID + '/detail" class="btn btn-success btn-sm">ดูข้อมูลสถานี</a> |'+
-                        '<a href="/stations/' + row.StationID + '/CheckDispenser" class="btn btn-info btn-sm">ตรวจสภาพตู้</a> |'+
-                            '<a href="/works/' + row.WorkID + '/detail" class="btn btn-success btn-sm">บันทึกการตรวจ</a> ';
+                        return  '<a href="{{env('APP_URL')}}stations/' + row.StationID + '/detail" class="btn btn-success btn-sm">ดูข้อมูลสถานี</a> |'+
+                        '<a href="{{env('APP_URL')}}stations/' + row.StationID + '/CheckDispenser" class="btn btn-info btn-sm">ตรวจสภาพตู้</a> |'+
+                            '<a href="{{env('APP_URL')}}works/' + row.WorkID + '/detail" class="btn btn-success btn-sm">บันทึกการตรวจ</a> ';
                     }
                 }
         ],

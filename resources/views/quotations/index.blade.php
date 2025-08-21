@@ -156,17 +156,17 @@ $(document).ready(function() {
     // Handle actions (view, edit, delete, download PDF)
     $(document).on('click', '.btn-view-quotation', function() {
         var id = $(this).data('id');
-        window.open('/quotations/' + id, '_blank');
+        window.open('{{env('APP_URL')}}quotations/' + id, '_blank');
     });
 
     $(document).on('click', '.btn-edit-quotation', function() {
         var id = $(this).data('id');
-        window.location.href = '/quotations/' + id + '/edit';
+        window.location.href = '{{env('APP_URL')}}quotations/' + id + '/edit';
     });
 
     $(document).on('click', '.btn-download-pdf', function() {
         var id = $(this).data('id');
-        window.open('/quotations/' + id + '/pdf', '_blank');
+        window.open('{{env('APP_URL')}}quotations/' + id + '/pdf', '_blank');
     });
 
     $(document).on('click', '.btn-delete-quotation', function() {
@@ -185,7 +185,7 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/quotations/' + id,
+                    url: '{{env('APP_URL')}}quotations/' + id,
                     method: 'DELETE',
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content')

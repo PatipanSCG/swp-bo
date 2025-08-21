@@ -602,7 +602,7 @@
         });
 
         $.ajax({
-            url: `/stations/countNozzles/${stationid}`,
+            url: `{{env('APP_URL')}}stations/countNozzles/${stationid}`,
             type: 'GET',
             success: function(response) {
                 let nozzleCount = response;
@@ -662,7 +662,7 @@
         let sum = 0;
 
         $.ajax({
-            url: `/calculate-charge/${nozzleCount}`,
+            url: `{{env('APP_URL')}}calculate-charge/${nozzleCount}`,
             type: 'GET',
             success: function(res) {
                 let html = `
@@ -682,12 +682,12 @@
                 $('#qt-service-table tbody').html(html);
 
                 $.ajax({
-                    url: `/calculate-distance/${last}/${long}`,
+                    url: `{{env('APP_URL')}}calculate-distance/${last}/${long}`,
                     type: 'GET',
                     success: function(res) {
                         const distance_km = res.distance_km;
                         $.ajax({
-                            url: `/calculate-travel/${distance_km}`,
+                            url: `{{env('APP_URL')}}calculate-travel/${distance_km}`,
                             type: 'GET',
                             success: function(res) {
                                 let html = `
@@ -761,7 +761,7 @@
         const map_url = $('#ip-linkgooglemap').val();
         console.log(station_id);
         $.ajax({
-            url: `/stations/updatelatlong`,
+            url: `{{env('APP_URL')}}stations/updatelatlong`,
             type: "POST",
             data: {
                 _token: '{{ csrf_token() }}',
@@ -810,7 +810,7 @@
 
     function loadDispensers(stationId) {
         $.ajax({
-            url: `/stations/${stationId}/dispensers/data`,
+            url: `{{env('APP_URL')}}stations/${stationId}/dispensers/data`,
             method: 'GET',
             success: function(dispensers) {
                 renderDispenserAccordion(stationId, dispensers.data);
@@ -854,7 +854,7 @@
 
     function loadNozzles(dispenserId, containerId) {
         $.ajax({
-            url: `/stations/dispensers/${dispenserId}/nozzle/data`,
+            url: `{{env('APP_URL')}}stations/dispensers/${dispenserId}/nozzle/data`,
             method: 'GET',
             success: function(res) {
                 let html = `
@@ -895,7 +895,7 @@
         const formData = $(this).serialize();
 
         $.ajax({
-            url: '/comunicatae',
+            url: '{{env('APP_URL')}}comunicatae',
             method: 'POST',
             data: formData,
             headers: {
