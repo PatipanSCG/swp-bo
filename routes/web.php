@@ -113,9 +113,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // 📝 งานที่ได้รับมอบหมาย
-    Route::prefix('works')->controller(WorkController::class)->group(function () {
-        Route::get('/', 'index')->name('works.index');
-    });
+ 
 
     // 📞 บันทึกการติดต่อ
     Route::prefix('comunicatae')->controller(ComunicataeController::class)->group(function () {
@@ -129,7 +127,7 @@ Route::middleware('auth')->group(function () {
 
    
     Route::prefix('works')->controller(WorkController::class)->group(function () {
-        Route::get('/', 'index');
+        Route::get('/', 'index')->name('works.index');
         Route::get('/{WorkID}/detail', 'detail');
         Route::view('/', 'work.index');
     });
@@ -157,7 +155,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/{id}/toggle-status', [PromotionController::class, 'toggleStatus'])->name('toggle-status');
 });
 
-    Route::get('/api/works', [WorkController::class, 'index'])->name('works.index');
+    Route::get('/api/works', [WorkController::class, 'index'])->name('works.apiindex');
 });
 Route::get('/test/wam/login', [\App\Http\Controllers\WamAuthTestController::class, 'index']);
 Route::get('/test-pdf', [App\Http\Controllers\QuotationController::class, 'testPDF']);
@@ -169,10 +167,5 @@ Route::prefix('wam-verify-requests')->group(function () {
     Route::get('/{id}', [WamVerifyRequestController::class, 'show']); // Get single record
     Route::patch('/{id}/status', [WamVerifyRequestController::class, 'updateStatus']); // Update status
 });
-Route::get('/dispenser-check/{workId}/{stationId}', function($workId, $stationId) {
-    return view('dispensers.dispenser-check', [
-        'workId' => $workId,
-        'stationId' => $stationId,
-        'stationName' => 'สถานี ' . $stationId
-    ]);
-})->where(['workId' => '[0-9]+', 'stationId' => '[0-9]+']);
+Route::get('/dispenser-check/{workId}/{stationId}', 'DispenserCheckController@index')
+     ->where(['workId' => '[0-9]+', 'stationId' => '[0-9]+']);

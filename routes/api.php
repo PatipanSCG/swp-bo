@@ -45,7 +45,7 @@ Route::prefix('works')->controller(WorkController::class)->group(function () {
     // Route::delete('/{id}', 'destroy');      // ลบ
 });
 Route::prefix('promotions')->controller(PromotionController::class)->group(function () {
-    Route::get('/', 'index');
+    Route::get('/', 'index')->name('works.index');
     Route::post('/', 'store');
     Route::get('/{id}', 'show');
     Route::put('/{id}', 'update');
