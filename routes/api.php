@@ -8,6 +8,8 @@ use App\Http\Controllers\NozzleController;
 use App\Http\Controllers\WorkController;
 use App\Http\Controllers\WorkInspectionRecordController;
 use App\Http\Controllers\NavCustomerController;
+use App\Http\Controllers\PromotionController;
+use App\Http\Controllers\QuotationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +26,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/fuletype/list', [FuelTypeController::class, 'list']);
- Route::get('/provinces/{province}/districts', [LocationController::class, 'getDistricts']);
+Route::get('/provinces/{province}/districts', [LocationController::class, 'getDistricts']);
 Route::get('/districts/{district}/subdistricts', [LocationController::class, 'getSubdistricts']);
 Route::prefix('nozzles')->controller(NozzleController::class)->group(function () {
     Route::post('/', 'store');               // สร้าง
@@ -38,6 +40,17 @@ Route::prefix('works')->controller(WorkController::class)->group(function () {
     Route::get('/{id}', 'getdata');            // อ่าน
     // Route::put('/{id}', 'update');          // อัปเดต
     // Route::delete('/{id}', 'destroy');      // ลบ
+});
+Route::prefix('promotions')->controller(PromotionController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::post('/', 'store');
+    Route::get('/{id}', 'show');
+    Route::put('/{id}', 'update');
+    Route::delete('/{id}', 'destroy');
+});
+Route::prefix('quotations')->controller(QuotationController::class)->group(function () {
+    Route::get('/', 'apiIndex');
+    
 });
 Route::post('/inspection-records', [WorkInspectionRecordController::class, 'store']);
 Route::get('/export-nozzles/{stationid}', [WorkInspectionRecordController::class, 'exportLabelByStation']);

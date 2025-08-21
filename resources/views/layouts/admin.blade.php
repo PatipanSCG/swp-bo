@@ -86,10 +86,16 @@
                 </a>
             </li>
             <!-- Nav Item - About -->
-            <li class="nav-item {{ Nav::isRoute('about') }}">
-                <a class="nav-link" href="{{ route('about') }}">
+            <li class="nav-item {{ Nav::isRoute('works.index') }}">
+                <a class="nav-link" href="{{ route('works.index') }}">
                     <i class="fas fa-fw fa-hands-helping"></i>
-                    <span>{{ __('About') }}</span>
+                    <span>งาน</span>
+                </a>
+            </li>
+            <li class="nav-item {{ Nav::isRoute('promotions.index') }}">
+                <a class="nav-link" href="{{ route('promotions.index') }}">
+                    <i class="fas fa-fw fa-hands-helping"></i>
+                    <span>โปรโมชั่น</span>
                 </a>
             </li>
 

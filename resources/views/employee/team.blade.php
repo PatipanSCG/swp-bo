@@ -93,7 +93,7 @@
   $(function() {
     const table = $('#team-table').DataTable({
       ajax: {
-        url: '/teams',
+        url: '{{env('APP_URL')}}teams',
         dataSrc: '' // ⭐️ บอกว่า array อยู่ root ของ JSON เลย
       },
 

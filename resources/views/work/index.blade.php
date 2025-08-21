@@ -37,7 +37,7 @@
 $(document).ready(function () {
     $('#works-table').DataTable({
         ajax: {
-            url: "/api/works", // หรือ "/api/works" ถ้าไม่ได้ตั้งชื่อ route
+            url: "{{env('APP_URL')}}api/works", // หรือ "/api/works" ถ้าไม่ได้ตั้งชื่อ route
             dataSrc: 'data'
         },
         columns: [
@@ -53,9 +53,9 @@ $(document).ready(function () {
             {
                     data: null,
                     render: function(data, type, row) {
-                        return '<a href="/stations/' + row.StationID + '/dispensers" class="btn btn-info btn-sm">จัดการตู้จ่าย</a> | ' +
-                            '<a href="/stations/' + row.StationID + '/detail" class="btn btn-success btn-sm">ดูข้อมูลสถานี</a> |'+
-                            '<a href="/works/' + row.WorkID + '" class="btn btn-success btn-sm">บันทึกการตรวจ</a> ';
+                        return  '<a href="/stations/' + row.StationID + '/detail" class="btn btn-success btn-sm">ดูข้อมูลสถานี</a> |'+
+                        '<a href="/stations/' + row.StationID + '/CheckDispenser" class="btn btn-info btn-sm">ตรวจสภาพตู้</a> |'+
+                            '<a href="/works/' + row.WorkID + '/detail" class="btn btn-success btn-sm">บันทึกการตรวจ</a> ';
                     }
                 }
         ],

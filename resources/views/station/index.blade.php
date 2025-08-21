@@ -151,7 +151,7 @@
     $(document).ready(function() {
         $('#stationTable').DataTable({
             ajax: {
-                url: '/stations/data',
+                url: '{{env('APP_URL')}}stations/data',
                 data: function(d) {
                     d.name = $('#filter-name').val();
                     d.taxid = $('#filter-taxid').val();
@@ -224,6 +224,7 @@
         });
 
         $('#btn-filter').on('click', function() {
+            
             $('#stationTable').DataTable().ajax.reload();
         });
 

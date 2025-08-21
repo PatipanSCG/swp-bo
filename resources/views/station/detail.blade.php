@@ -319,7 +319,7 @@
             serverSide: true,
             searching: false,
             ajax: {
-                url: '/contacts/getdata',
+                url: '{{env('APP_URL')}}contacts/getdata',
                 data: {
                     station_id: stationId
                 }
@@ -366,7 +366,7 @@
 
         $('#table-communication').DataTable({
             ajax: {
-                url: `/comunicatae/${stationId}`,
+                url: `{{env('APP_URL')}}comunicatae/${stationId}`,
                 method: 'GET',
                 dataSrc: '' // ถ้า API ส่งกลับมาเป็น array ไม่ต้องเจาะ path เช่น `data.items`
             },
@@ -529,10 +529,10 @@
             }
         });
     }
-    $('#btn-add-location-modal').on('click',function(){
-    $('#addlocationModal').modal('show');
+    $('#btn-add-location-modal').on('click', function() {
+        $('#addlocationModal').modal('show');
     });
-    $('#btn-show-map').on('click', function () {
+    $('#btn-show-map').on('click', function() {
         const last = parseFloat($('#ip-last').val().trim());
         const long = parseFloat($('#ip-long').val().trim());
 
@@ -580,7 +580,7 @@
         const stationid = $('#stationid').val();
         const last = $('#ip-last').val();
         const long = $('#ip-long').val();
-
+            loadPromotionList();
         if (!last || !long) {
             Swal.fire({
                 icon: 'error',
@@ -611,7 +611,9 @@
                     Swal.fire({
                         title: 'กรุณากรอกจำนวนหัวจ่าย',
                         input: 'number',
-                        inputAttributes: { min: 1 },
+                        inputAttributes: {
+                            min: 1
+                        },
                         inputPlaceholder: 'เช่น 4',
                         confirmButtonText: 'ตกลง',
                         showCancelButton: true,
@@ -626,7 +628,7 @@
                         if (result.isConfirmed) {
                             nozzleCount = parseInt(result.value);
                             proceedToCharge(nozzleCount, last, long);
-                             Swal.fire({
+                            Swal.fire({
                                 title: 'กำลังโหลดข้อมูล...',
                                 html: 'กรุณารอสักครู่',
                                 allowOutsideClick: false,
@@ -640,7 +642,7 @@
                     });
                 } else {
                     proceedToCharge(nozzleCount, last, long);
-                     Swal.fire({
+                    Swal.fire({
                         title: 'กำลังโหลดข้อมูล...',
                         html: 'กรุณารอสักครู่',
                         allowOutsideClick: false,
@@ -655,24 +657,26 @@
             }
         });
     });
+
     function proceedToCharge(nozzleCount, last, long) {
-        let sum=0;
+        let sum = 0;
+
         $.ajax({
             url: `/calculate-charge/${nozzleCount}`,
             type: 'GET',
             success: function(res) {
                 let html = `
-                    <tr>
-                        <td><B>1.ค่าบริการปรับมาตรวัดพร้อมตีตราหัวจ่ายน้ำมัน จำนวน ${res.nozzle_count} หัวจ่าย </B>`;
+                <tr>
+                    <td><B>1.ค่าบริการปรับมาตรวัดพร้อมตีตราหัวจ่ายน้ำมัน จำนวน ${res.nozzle_count} หัวจ่าย </B>`;
                 res.breakdown.forEach(nz => {
                     html += `<br>&emsp;<i>${nz.range} จำนวน ${nz.quantity} หัวจ่าย หัวจ่ายละ  ${nz.rate} เป็นเงิน  ${nz.amount} บาท</i>`;
                 });
                 html += `</td>
-                        <td class="text-center">1</td>
-                        <td class="text-end">${res.total_charge}</td>
-                        <td class="text-end">${res.total_charge}</td>
-                        <input type="hidden" id="ip-qt-totolcharge" value="${res.total_charge}">
-                    </tr>`;
+                    <td class="text-center">1</td>
+                    <td class="text-end">${res.total_charge}</td>
+                    <td class="text-end">${res.total_charge}</td>
+                    <input type="hidden" id="ip-qt-totolcharge" value="${res.total_charge}">
+                </tr>`;
                 let totalCharge = parseFloat((res.total_charge + '').replace(/,/g, '')) || 0;
                 sum += totalCharge;
                 $('#qt-service-table tbody').html(html);
@@ -687,8 +691,8 @@
                             type: 'GET',
                             success: function(res) {
                                 let html = `
-                                    <tr>
-                                        <td>2.ค่าเดินทาง ระยะทาง  ${res.distance} กิโลเมตร</td>`;
+                                <tr>
+                                    <td>2.ค่าเดินทาง ระยะทาง  ${res.distance} กิโลเมตร</td>`;
                                 res.details.forEach(nz => {
                                     if (nz.type === 'flat') {
                                         html += `<br>&emsp;<i>ระยะทาง ${nz.range} เหมาจ่าย ${nz.price} บาท</i>`;
@@ -698,22 +702,27 @@
                                 });
 
                                 html += `</td>
-                                    <td class="text-center">1</td>
-                                    <td class="text-end">${res.total_price}</td>
-                                    <td class="text-end">${res.total_price}</td>
-                                     <input type="hidden" id="ip-qt-totoltarvel" value="${res.total_price}">
+                                <td class="text-center">1</td>
+                                <td class="text-end">${res.total_price}</td>
+                                <td class="text-end">${res.total_price}</td>
+                                 <input type="hidden" id="ip-qt-totoltarvel" value="${res.total_price}">
 
-                                </tr>`;
+                            </tr>`;
                                 let totalTravel = parseFloat((res.total_price + '').replace(/,/g, '')) || 0;
                                 sum += totalTravel;
                                 $('#qt-service-table tbody').append(html);
-                                html = `<tr  class="table-info">
-                                        <td colspan="3" class="text-end"><strong>ราคารวมทั้งหมด:</strong></td>
-                                        <td class="text-end"><strong>${sum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
-                                </tr><input type="hidden" id="ip-qt-totalprice" value="${sum}">`;
-                                     
+                                html = `<tr class="table-info total-row">
+                                    <td colspan="3" class="text-end"><strong>ราคารวมทั้งหมด:</strong></td>
+                                    <td class="text-end"><strong>${sum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+                            </tr>
+                            <input type="hidden" id="ip-qt-totalprice" value="${sum}">`;
+
 
                                 $('#qt-service-table tbody').append(html);
+
+                                // รีเซ็ตฟอร์มส่วนลดหลังจากมีข้อมูลครบแล้ว
+                                initializeDiscountForm();
+
                                 $('#quotationModal').modal('show');
                                 Swal.close();
                             },
@@ -731,6 +740,18 @@
                 Swal.fire('ผิดพลาด', 'โหลดข้อมูลค่าบริการล้มเหลว', 'error');
             }
         });
+    }
+    function initializeDiscountForm() {
+        $('#ip-qt-discounttype').val('');
+        $('#ip-qt-discountunit').val('baht');
+        $('#ip-qt-discount').val(0);
+        
+        // อัปเดตราคารวมที่แสดง
+        const totalPrice = parseFloat($('#ip-qt-totalprice').val()) || 0;
+        $('#qt-total-price').text(totalPrice.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }));
     }
     $('#btn-save-linkgooglemap').on('click', function(e) {
 

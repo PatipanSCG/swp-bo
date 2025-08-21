@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Noto Sans Thai', 'DejaVu Sans', sans-serif !important;
+}
+
+body {
+    font-family: 'Noto Sans Thai', 'DejaVu Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+}
+
+.thai-text {
+    font-family: 'Noto Sans Thai', 'DejaVu Sans', sans-serif !important;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Noto Sans Thai', 'DejaVu Sans', sans-serif;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    font-family: 'Noto Sans Thai', 'DejaVu Sans', sans-serif;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.company-info {
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.quotation-title {
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: underline;
+    margin: 20px 0;
+}

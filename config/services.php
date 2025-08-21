@@ -33,4 +33,10 @@ return [
     'google_maps' => [
         'key' => env('GOOGLE_MAPS_API_KEY'),
     ],
+    'wam' => [
+        'base'     => env('WAM_BASE', 'https://wam.dit.go.th'),
+        'email'    => env('WAM_EMAIL'),
+        'password' => env('WAM_PASSWORD'),
+    ],
+
 ];

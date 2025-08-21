@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'sqlsrv_secondary'),
 
     /*
     |--------------------------------------------------------------------------
@@ -36,13 +36,15 @@ return [
     'connections' => [
 
         'sqlsrv_secondary' => [
-            'driver' => 'sqlsrv',
+             'driver' => 'sqlsrv',
             'host' => env('SQLSRV_HOST', 'localhost'),
+            'port' => env('SQLSRV_PORT', '1433'),
             'database' => env('SQLSRV_DATABASE', 'forge'),
             'username' => env('SQLSRV_USERNAME', 'forge'),
             'password' => env('SQLSRV_PASSWORD', ''),
             'charset' => 'utf8',
             'prefix' => '',
+            'prefix_indexes' => true,
         ],
         'sqlsrv_NAV' => [
             'driver' => 'sqlsrv',

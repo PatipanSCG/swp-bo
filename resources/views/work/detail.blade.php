@@ -153,7 +153,7 @@
 
         $('#works-table').DataTable({
            ajax: {
-                url: `/api/works/${WorkID}`,
+                url: `{{env('APP_URL')}}api/works/${WorkID}`,
                 // data: function(d) {
                 //     d.name = $('#filter-name').val();
                 //     d.taxid = $('#filter-taxid').val();

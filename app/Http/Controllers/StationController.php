@@ -193,6 +193,7 @@ class StationController extends Controller
     {
         $result = LocationController::getDrivingDistance(13.8297578, 100.5573418, (float) $last, (float) $long);
 
+
         return $result;
     }
     public function updatelatlong(Request $request)

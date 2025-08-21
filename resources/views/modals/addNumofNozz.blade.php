@@ -2,7 +2,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content"> <!-- ✅ เพิ่มบรรทัดนี้ -->
             <div class="modal-header">
-                <h5 class="modal-title">เพิ่มสถานที่ปั้มน้ำมัน</h5>
+                <h5 class="modal-title">เพิ่มจำนวนหัวจ่าย</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -12,7 +12,7 @@
            
                 <div class="form-group ">
                     <label for="LinkGoogleMap">Link Google Map</label>
-                    <input type="text" id="ip-linkgooglemap"name="ip-linkgooglemap" class="form-control">
+                    <input type="text" id="ip-nozznum"name="ip-linkgooglemap" class="form-control">
                 </div>
                  <button type="button" class="btn btn-primary" id="btn-save-linkgooglemap">บันทึก
             </button>

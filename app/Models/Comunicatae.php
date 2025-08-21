@@ -28,6 +28,7 @@ class Comunicatae extends Model
         'ComunicataeTypeID',
         'ComunicataeDetail',
         'Status',
+        'Link',
         'created_by',
         'updated_by',
     ];

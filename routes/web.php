@@ -17,11 +17,14 @@ use App\Http\Controllers\{
     SysTechnicianTeamController,
     ComunicataeController,
     ContactController,
-    WorkController
+    WorkController,
+    QuotationController,
+    PromotionController
 };
 
 Route::get('/', function () {
-    return view('welcome');
+    // return view('welcome');
+     return redirect()->route('login');
 });
 
 Auth::routes();
@@ -45,7 +48,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/addemployee/{empCode}', 'add')->name('employees.add');
         Route::get('/teams', 'teams')->name('employees.teams');
         Route::get('/getdataforen', 'getdataforen')->name('employees.getdataforen');
-        
     });
 
     // 🏪 Stations
@@ -58,7 +60,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/model', 'model')->name('stations.model');
         Route::get('/countNozzles/{stationid}', 'countNozzles')->name('stations.countNozzles');
         Route::post('/updatelatlong', 'updatelatlong')->name('stations.updatelatlong');
-
     });
 
     // 🧯 Dispensers
@@ -123,13 +124,39 @@ Route::middleware('auth')->group(function () {
         Route::put('/{id}', 'update');
         Route::delete('/{id}', 'destroy');
         Route::get('/types', 'getTypes');
-        
     });
 
+   
     Route::prefix('works')->controller(WorkController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('/{WorkID}/detail', 'detail');
         Route::view('/', 'work.index');
     });
+
+    Route::prefix('quotations')->controller(QuotationController::class)->group(function () {
+        Route::get('{quotation}/pdf', 'downloadPDF');
+        Route::post('/store', 'store');
+    });
+    Route::prefix('promotions')->name('promotions.')->middleware(['auth'])->group(function () {
+    
+    // หน้าแสดงรายการหลัก (Web)
+    Route::get('/', [PromotionController::class, 'index'])->name('index');
+    
+    // API Routes สำหรับ AJAX Operations
+    Route::get('/datatable', [PromotionController::class, 'datatable'])->name('datatable');
+    Route::post('/store', [PromotionController::class, 'store'])->name('store');
+    Route::get('/{id}/show', [PromotionController::class, 'show'])->name('show');
+    Route::put('/{id}/update', [PromotionController::class, 'update'])->name('update');
+    Route::delete('/{id}/destroy', [PromotionController::class, 'destroy'])->name('destroy');
+    
+    // Bulk Operations
+    Route::post('/bulk-delete', [PromotionController::class, 'bulkDelete'])->name('bulk-delete');
+    
+    // Status Operations
+    Route::patch('/{id}/toggle-status', [PromotionController::class, 'toggleStatus'])->name('toggle-status');
+});
+
     Route::get('/api/works', [WorkController::class, 'index'])->name('works.index');
 });
+Route::get('/test/wam/login', [\App\Http\Controllers\WamAuthTestController::class, 'index']);
+Route::get('/test-pdf', [App\Http\Controllers\QuotationController::class, 'testPDF']);

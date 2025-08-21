@@ -74,17 +74,17 @@ class Station extends Model
     }
     public function province()
     {
-        return $this->belongsTo(Province::class, 'Province', 'code');
+        return $this->belongsTo(Province::class, 'Province', 'Code');
     }
 
     public function district()
     {
-        return $this->belongsTo(District::class, 'Distric', 'code');
+        return $this->belongsTo(District::class, 'Distric', 'Code');
     }
 
     public function subdistrict()
     {
-        return $this->belongsTo(Subdistrict::class, 'Subdistric', 'code');
+        return $this->belongsTo(Subdistrict::class, 'Subdistric', 'Code');
     }
 
     public function nozzle()
@@ -103,5 +103,9 @@ class Station extends Model
             'StationID',          // Local key on stations table
             'DispenserID'         // Local key on dispensers table
         );
+    }
+     public function quotations()
+    {
+        return $this->hasMany(Quotation::class, 'StationID', 'StationID');
     }
 }
