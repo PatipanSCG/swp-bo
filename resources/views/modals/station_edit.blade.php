@@ -1,28 +1,36 @@
 <div class="modal fade" id="editStationModal" tabindex="-1" role="dialog" aria-labelledby="editStationModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
-    <form method="POST" action="{{ route('stations.update', $station->StationID) }}">
-      @csrf
-      @method('PUT')
-      <div class="modal-content">
+    <div class="modal-content">
+      <form method="POST" action="{{ route('stations.update', $station->StationID) }}">
+        @csrf
+        @method('PUT')
+        
         <div class="modal-header">
           <h5 class="modal-title">แก้ไขข้อมูลสถานี</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
+        
         <div class="modal-body">
           <div class="form-group">
             <label>ชื่อสถานี</label>
-            <input type="text" name="StationName" class="form-control" value="{{ $station->StationName }}">
+            <input type="text" name="StationName" class="form-control" value="{{ $station->StationName }}" required>
           </div>
+          
           <div class="form-group">
             <label>เลขประจำตัวผู้เสียภาษี</label>
             <input type="text" name="TaxID" class="form-control" value="{{ $station->TaxID }}">
           </div>
+          
           <div class="form-group">
-
             <label>ยี่ห้อ</label>
             <select class="form-control" name="BrandID" required>
               @foreach($brands as $brand)
-              <option value="{{ $brand->BrandID }}" {{$station->BrandID == $brand->BrandId ? 'selectde' : ''}}>{{ $brand->BrandName }}</option>
+              {{-- Fixed: changed 'selectde' to 'selected' --}}
+              <option value="{{ $brand->BrandID }}" {{ $station->BrandID == $brand->BrandID ? 'selected' : '' }}>
+                {{ $brand->BrandName }}
+              </option>
               @endforeach
             </select>
           </div>
@@ -31,28 +39,38 @@
             <label>ที่อยู่</label>
             <input type="text" name="Address" class="form-control" value="{{ $station->Address }}">
           </div>
+          
           <div class="form-group">
             <label>จังหวัด</label>
             <select class="form-control" name="Province" id="ip-province">
               @foreach($provinces as $prov)
-              <option value="{{ $prov->Code }}" {{ $station->Province == $prov->Code ? 'selected' : '' }}>{{ $prov->NameInThai }}</option>
+              <option value="{{ $prov->Code }}" {{ $station->Province == $prov->Code ? 'selected' : '' }}>
+                {{ $prov->NameInThai }}
+              </option>
               @endforeach
             </select>
           </div>
+          
           <div class="form-group">
             <label>อำเภอ</label>
             <select class="form-control" name="District" id="ip-district">
               @foreach($District as $district)
-              <option value="{{ $district->Code }}" {{ $station->Distric == $district->Code ? 'selected' : '' }}>{{ $district->NameInThai }}</option>
+              {{-- Fixed: changed $station->Distric to $station->District --}}
+              <option value="{{ $district->Code }}" {{ $station->District == $district->Code ? 'selected' : '' }}>
+                {{ $district->NameInThai }}
+              </option>
               @endforeach
             </select>
           </div>
+          
           <div class="form-group">
-
             <label>ตำบล</label>
             <select class="form-control" name="Subdistrict" id="ip-subdistrict">
               @foreach($Subdistrict as $subdistrict)
-              <option value="{{ $subdistrict->Code }}" {{ $station->Subdistric == $subdistrict->Code ? 'selected' : '' }}>{{ $subdistrict->NameInThai }}</option>
+              {{-- Fixed: changed $station->Subdistric to $station->Subdistrict --}}
+              <option value="{{ $subdistrict->Code }}" {{ $station->Subdistrict == $subdistrict->Code ? 'selected' : '' }}>
+                {{ $subdistrict->NameInThai }}
+              </option>
               @endforeach
             </select>
           </div>
@@ -62,67 +80,83 @@
             <input type="text" class="form-control" name="Postcode" id="ip-postcode" value="{{ $station->Postcode }}">
           </div>
         </div>
+        
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
           <button type="submit" class="btn btn-primary">บันทึกการเปลี่ยนแปลง</button>
         </div>
-      </div>
+      </form>
+    </div>
   </div>
-  </form>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
- $('#ip-province').on('change', function() {
-            const provinccode = $(this).val();
-            console.log(provinccode);
-            $('#ip-district').html('<option>-- โหลดอำเภอ... --</option>').prop('disabled', true);
-            $('#ip-subdistrict').html('<option>-- เลือกตำบล --</option>').prop('disabled', true);
+$(document).ready(function() {
+    $('#ip-province').on('change', function() {
+        const provinceCode = $(this).val();
+        console.log('Selected province:', provinceCode);
+        
+        // Reset dependent dropdowns
+        $('#ip-district').html('<option>-- โหลดอำเภอ... --</option>').prop('disabled', true);
+        $('#ip-subdistrict').html('<option>-- เลือกตำบล --</option>').prop('disabled', true);
+        $('#ip-postcode').val('');
 
-            if (provinccode) {
-                $.ajax({
-                    url: window.APP_URL+`/api/provinces/${provinccode}/districts`,
-                    type: 'GET',
-                    success: function(res) {
-                        $('#ip-district').empty().append('<option value="">-- เลือกอำเภอ --</option>');
-                        $.each(res, function(key, value) {
-                            $('#ip-district').append(`<option value="${value.Code}">${value.NameInThai}</option>`);
-                        });
-                        $('#ip-district').prop('disabled', false);
-                    }
-                });
-            }
-        });
+        if (provinceCode) {
+            $.ajax({
+                url: window.APP_URL + `/api/provinces/${provinceCode}/districts`,
+                type: 'GET',
+                success: function(response) {
+                    $('#ip-district').empty().append('<option value="">-- เลือกอำเภอ --</option>');
+                    $.each(response, function(key, district) {
+                        $('#ip-district').append(`<option value="${district.Code}">${district.NameInThai}</option>`);
+                    });
+                    $('#ip-district').prop('disabled', false);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading districts:', error);
+                    alert('เกิดข้อผิดพลาดในการโหลดข้อมูลอำเภอ');
+                }
+            });
+        }
+    });
 
-        $('#ip-district').on('change', function() {
-            const districtId = $(this).val();
-            $('#ip-subdistrict').html('<option>-- โหลดตำบล... --</option>').prop('disabled', true);
-            console.log(districtId);
-            if (districtId) {
-                $.ajax({
-                    url: window.APP_URL+`/api/districts/${districtId}/subdistricts`,
-                    type: 'GET',
-                    success: function(res) {
-                        console.log(res)
-                        $('#ip-subdistrict').empty().append('<option value="">-- เลือกตำบล --</option>');
-                        $.each(res, function(key, value) {
-                            $('#ip-subdistrict').append(`<option value="${value.Id}" data-postcode="${value.ZipCode}">${value.NameInThai}</option>`);
-                        });
-                        $('#ip-subdistrict').prop('disabled', false);
-                    }
-                });
-            }
-        });
-        $('#ip-subdistrict').on('change', function() {
-            // ดึง option ที่ถูกเลือก
-            const selectedOption = $(this).find('option:selected');
-
-            // ดึงค่า data-postcode
-            const postcode = selectedOption.data('postcode');
-
-            // แสดงผล หรือเอาไปใส่ใน input อื่น
+    $('#ip-district').on('change', function() {
+        const districtCode = $(this).val();
+        $('#ip-subdistrict').html('<option>-- โหลดตำบล... --</option>').prop('disabled', true);
+        $('#ip-postcode').val('');
+        
+        if (districtCode) {
+            $.ajax({
+                url: window.APP_URL + `/api/districts/${districtCode}/subdistricts`,
+                type: 'GET',
+                success: function(response) {
+                    console.log('Subdistricts response:', response);
+                    $('#ip-subdistrict').empty().append('<option value="">-- เลือกตำบล --</option>');
+                    $.each(response, function(key, subdistrict) {
+                        // Handle different possible property names
+                        const code = subdistrict.Code || subdistrict.Id;
+                        const postcode = subdistrict.ZipCode || subdistrict.Postcode;
+                        $('#ip-subdistrict').append(`<option value="${code}" data-postcode="${postcode}">${subdistrict.NameInThai}</option>`);
+                    });
+                    $('#ip-subdistrict').prop('disabled', false);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading subdistricts:', error);
+                    alert('เกิดข้อผิดพลาดในการโหลดข้อมูลตำบล');
+                }
+            });
+        }
+    });
+    
+    $('#ip-subdistrict').on('change', function() {
+        const selectedOption = $(this).find('option:selected');
+        const postcode = selectedOption.data('postcode');
+        
+        if (postcode) {
             console.log("รหัสไปรษณีย์:", postcode);
-            $('#ip-postcode').val(postcode); // กรณีคุณมี input เก็บ postcode
-
-        });
-
+            $('#ip-postcode').val(postcode);
+        }
+    });
+});
 </script>

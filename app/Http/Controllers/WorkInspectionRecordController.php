@@ -30,7 +30,8 @@ class WorkInspectionRecordController extends Controller
             'KFactor' => 'nullable|numeric',
             'ExpirationDate' => 'nullable|date',
             'KarudaNumber' => 'nullable|string',
-            'SealNumber' => 'nullable|string'
+            'SealNumber' => 'nullable|string',
+             'KFactor' => 'nullable|numeric'
         ]);
 
         // MMQ base value for R14

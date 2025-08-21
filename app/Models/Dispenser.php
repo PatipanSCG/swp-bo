@@ -42,6 +42,7 @@ class Dispenser extends Model
     {
         return $this->belongsTo(Brand::class, 'BrandID');
     }
+ 
 
     public function nozzles()
     {
@@ -56,5 +57,29 @@ class Dispenser extends Model
     public function workNozzles()
     {
         return $this->hasMany(WorkNozzle::class, 'DispenserID');
+    }
+    public function checks()
+    {
+        return $this->hasMany(DispenserCheck::class, 'DispenserID', 'DispenserID');
+    }
+
+    /**
+     * ดูการตรวจเช็คล่าสุด
+     */
+    public function latestCheck()
+    {
+        return $this->hasOne(DispenserCheck::class, 'DispenserID', 'DispenserID')
+                    ->latest('check_date');
+    }
+
+    /**
+     * ตรวจสอบว่ามีการตรวจเช็คใน work นี้แล้วหรือไม่
+     */
+    public function hasCheckInWork($workId)
+    {
+        return $this->checks()
+                    ->where('WorkID', $workId)
+                    ->where('status', 'completed')
+                    ->exists();
     }
 }

@@ -8,15 +8,12 @@ class WamAuthTestController extends Controller
     public function index(WamAuth $wamAuth)
     {
          $token = $wamAuth->login();
+         $data = $wamAuth->getVerifyRequests($token, [
+            'page' => 1,
+            'limit' => 20,
+        ]);
 
-        if ($token) {
-            return response()->json([
-                'accessToken' => $token
-            ]);
-        }
+        return response()->json($data['data']);
 
-        return response()->json([
-            'error' => 'Login failed'
-        ], 401);
     }
 }

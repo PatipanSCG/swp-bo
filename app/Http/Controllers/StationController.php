@@ -75,9 +75,9 @@ class StationController extends Controller
         // ดึงข้อมูลสถานีตาม ID
         $station = Station::with([
             'brand:BrandID,BrandName',
-            'province:code,NameInThai,Id',
-            'district:code,NameInThai,ProvinceId,Id',
-            'subdistrict:code,NameInThai,ZipCode,DistrictId,Id',
+            'province:code,NameInThai',
+            'district:code,NameInThai,ProvinceId',
+            'subdistrict:code,NameInThai,ZipCode,DistrictId',
             'dispensers:DispenserID,StationID,LastCalibationDate'
         ])
             ->withCount([
@@ -87,8 +87,8 @@ class StationController extends Controller
             ->where('StationID', $stationId)
             ->where('Status', 1)
             ->firstOrFail(); // ✅ ได้ model เดียว
-
         // หาวันที่ calibration ล่าสุดจาก dispenser
+      
         $station->latest_calibration_date = optional(
             $station->dispensers->sortByDesc('LastCalibationDate')->first()
         )->LastCalibationDate;
@@ -104,6 +104,8 @@ class StationController extends Controller
         $provinces = Province::all();
         $District = District::all();
         $Subdistrict = Subdistrict::all();
+
+
         return view('station.detail', compact('station', 'customer', 'provinces', 'District', 'Subdistrict', 'brands', 'communicationTypeList'));
     }
     public function model()
@@ -129,7 +131,6 @@ class StationController extends Controller
     public function update(Request $request, $id)
 {
     $station = Station::findOrFail($id);
-
     // 1. บันทึกข้อมูลสถานี
     $station->StationName = $request->input('StationName');
     $station->TaxID = $request->input('TaxID');

@@ -1,12 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Helpers\MapHelper;
 use App\Models\Work;
 use App\Models\WorkEmployee;
 use App\Models\WorkInspectionRecord;
+use App\Models\WamVerifyRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class WorkController extends Controller
 {
@@ -73,72 +76,117 @@ class WorkController extends Controller
         return view('work.detail', compact('works'));
     }
     public function getdata($workID)
-{
-    $work = Work::with([
-        'station.dispensers.brand',
-        'station.dispensers.nozzles.fuleType',
-        'station.dispensers.nozzles.inspectionRecords' => function($query) use ($workID) {
-            $query->where('WorkID', $workID); // ดึงเฉพาะ record ของงานนี้
-        }
-    ])->where('WorkID', $workID)->first();
+    {
+        $work = Work::with([
+            'station.dispensers.brand',
+            'station.dispensers.nozzles.fuleType',
+            'station.dispensers.nozzles.inspectionRecords' => function ($query) use ($workID) {
+                $query->where('WorkID', $workID); // ดึงเฉพาะ record ของงานนี้
+            }
+        ])->where('WorkID', $workID)->first();
 
-    if (!$work) {
+        if (!$work) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ไม่พบข้อมูลงาน'
+            ], 404);
+        }
+
+        $nozzles = [];
+
+        foreach ($work->station->dispensers as $dispenser) {
+            foreach ($dispenser->nozzles as $nozzle) {
+                $record = $nozzle->inspectionRecords->first(); // ใช้ first() เพื่อดึง 1 รายการ
+
+                $nozzles[] = [
+                    'WorkID' => $workID,
+                    'StationID' => $work->StationID,
+                    'DispenserID' => $dispenser->DispenserID,
+                    'NozzleID' => $nozzle->NozzleID ?? '-',
+                    'NozzleNumber' => $nozzle->NozzleNumber ?? '-',
+                    'Brand' => $dispenser->brand->BrandName ?? '-',
+                    'Modal' => $dispenser->Model ?? '-',
+                    'fuletype' => $nozzle->fuleType->FuleTypeName ?? '-',
+                    'FlowRate' => $dispenser->FlowRate ?? '-',
+                    'MitterBegin' => $record?->MitterBegin ?? '-',
+                    'MitterEnd' => $record?->MitterEnd ?? '-',
+                    'MMQ_1L' => is_numeric($record?->MMQ_1L) ? number_format($record->MMQ_1L, 0) : '-',
+                    'MMQ_5L' => is_numeric($record?->MMQ_5L) ? number_format($record->MMQ_5L, 0) : '-',
+                    'MPE_5L' => is_numeric($record?->MPE_5L) ? number_format($record->MPE_5L, 0) : '-',
+                    'MPE_20L' => is_numeric($record?->MPE_20L) ? number_format($record->MPE_20L, 0) : '-',
+                    'Repeat5L_1' => is_numeric($record?->Repeat5L_1) ? number_format($record->Repeat5L_1, 0) : '-',
+                    'Repeat5L_2' => is_numeric($record?->Repeat5L_2) ? number_format($record->Repeat5L_2, 0) : '-',
+                    'Repeat5L_3' => is_numeric($record?->Repeat5L_3) ? number_format($record->Repeat5L_3, 0) : '-',
+                    'Repeat20L_1' => is_numeric($record?->Repeat20L_1) ? number_format($record->Repeat20L_1, 0) : '-',
+                    'Repeat20L_2' => is_numeric($record?->Repeat20L_2) ? number_format($record->Repeat20L_2, 0) : '-',
+                    'Repeat20L_3' => is_numeric($record?->Repeat20L_3) ? number_format($record->Repeat20L_3, 0) : '-',
+                    'SealNumber' => $record?->SealNumber ?? '-',
+                    'KFactor' => $record?->KFactor ?? '-',
+                    'status' => $record?->status ?? '-',
+                    'VR_1' => $record?->VR_1 ?? '-',
+                    'VR_2' => $record?->VR_2 ?? '-',
+                    'VR_3' => $record?->VR_3 ?? '-',
+                    'VR_4' => $record?->VR_4 ?? '-',
+                    'VR_5' => $record?->VR_5 ?? '-',
+                    'SNS_True' => $record?->SNS_True ?? '-',
+                    'SNS_False' => $record?->SNS_False ?? '-',
+                    'SN' => $nozzle->SN ?? '-',     // กรอกเพิ่มถ้ามี
+                    'MMQ' => $nozzle->MMQ ?? '-',    // คำนวณเพิ่มภายหลัง
+                    'Qmax' => $nozzle->Qmax ?? '-',   // คำนวณเพิ่มภายหลัง
+                    'Qmin' => $nozzle->Qmin ?? '-',   // คำนวณเพิ่มภายหลัง
+                ];
+            }
+        }
+
         return response()->json([
-            'success' => false,
-            'message' => 'ไม่พบข้อมูลงาน'
-        ], 404);
+            'success' => true,
+            'data' => $nozzles
+        ]);
     }
+    public function getAvailableSheetNumbers(): JsonResponse
+    {
+        try {
+            // ดึง sheet_no ทั้งหมดจาก WamVerifyRequest ที่ยังไม่ถูกใช้ใน Work
+            $availableSheets = WamVerifyRequest::whereNotIn('sheet_no', function ($query) {
+                $query->select('sheet_no')
+                    ->from('work')
+                    ->whereNotNull('sheet_no');
+            })
+                ->whereNotNull('sheet_no')
+                ->where('sheet_no', '!=', '')
+                ->select([
+                    'id',
+                    'sheet_no',
+                    'merchan_name',
+                    'customer_name',
+                    'vb_prov_name',
+                    'status',
+                    'total_request',
+                    'have_inspector',
+                    'create_time'
+                ])
+                ->orderBy('create_time', 'desc')
+                ->get();
 
-    $nozzles = [];
+            return response()->json([
+                'success' => true,
+                'message' => 'Available sheet numbers retrieved successfully',
+                'data' => $availableSheets,
+                'total' => $availableSheets->count()
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to get available sheet numbers', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
 
-    foreach ($work->station->dispensers as $dispenser) {
-        foreach ($dispenser->nozzles as $nozzle) {
-            $record = $nozzle->inspectionRecords->first(); // ใช้ first() เพื่อดึง 1 รายการ
-
-            $nozzles[] = [
-                'WorkID' => $workID,
-                'StationID' => $work->StationID,
-                'DispenserID' => $dispenser->DispenserID,
-                'NozzleID' => $nozzle->NozzleID ?? '-',
-                'NozzleNumber' => $nozzle->NozzleNumber ?? '-',
-                'Brand' => $dispenser->brand->BrandName ?? '-',
-                'Modal' => $dispenser->Model ?? '-',
-                'fuletype' => $nozzle->fuleType->FuleTypeName ?? '-',
-                'FlowRate' => $dispenser->FlowRate ?? '-',
-                'MitterBegin' => $record?->MitterBegin ?? '-',
-                'MitterEnd' => $record?->MitterEnd ?? '-',
-                'MMQ_1L' => is_numeric($record?->MMQ_1L) ? number_format($record->MMQ_1L, 0) : '-',
-                'MMQ_5L' => is_numeric($record?->MMQ_5L) ? number_format($record->MMQ_5L, 0) : '-',
-                'MPE_5L' => is_numeric($record?->MPE_5L) ? number_format($record->MPE_5L, 0) : '-',
-                'MPE_20L' => is_numeric($record?->MPE_20L) ? number_format($record->MPE_20L, 0) : '-',
-                'Repeat5L_1' => is_numeric($record?->Repeat5L_1) ? number_format($record->Repeat5L_1, 0) : '-',
-                'Repeat5L_2' => is_numeric($record?->Repeat5L_2) ? number_format($record->Repeat5L_2, 0) : '-',
-                'Repeat5L_3' => is_numeric($record?->Repeat5L_3) ? number_format($record->Repeat5L_3, 0) : '-',
-                'Repeat20L_1' => is_numeric($record?->Repeat20L_1) ? number_format($record->Repeat20L_1, 0) : '-',
-                'Repeat20L_2' => is_numeric($record?->Repeat20L_2) ? number_format($record->Repeat20L_2, 0) : '-',
-                'Repeat20L_3' => is_numeric($record?->Repeat20L_3) ? number_format($record->Repeat20L_3, 0) : '-',
-                'SealNumber' => $record?->SealNumber ?? '-',
-                'status' => $record?->status ?? '-',
-                'VR_1' => $record?->VR_1 ?? '-',
-                'VR_2' => $record?->VR_2 ?? '-',
-                'VR_3' => $record?->VR_3 ?? '-',
-                'VR_4' => $record?->VR_4 ?? '-',
-                'VR_5' => $record?->VR_5 ?? '-',
-                'SNS_True' => $record?->SNS_True ?? '-',
-                'SNS_False' => $record?->SNS_False ?? '-',
-                'SN' => $nozzle->SN ?? '-',     // กรอกเพิ่มถ้ามี
-                'MMQ' => $nozzle->MMQ ?? '-',    // คำนวณเพิ่มภายหลัง
-                'Qmax' => $nozzle->Qmax ?? '-',   // คำนวณเพิ่มภายหลัง
-                'Qmin' => $nozzle->Qmin ?? '-',   // คำนวณเพิ่มภายหลัง
-            ];
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get available sheet numbers: ' . $e->getMessage(),
+                'data' => []
+            ], 500);
         }
     }
-
-    return response()->json([
-        'success' => true,
-        'data' => $nozzles
-    ]);
-}
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -155,7 +203,7 @@ class WorkController extends Controller
         $originLng = env('ORIGIN_LNG', 100.5018);
 
         // คำนวณระยะทาง
-        $distanceData = \App\Helpers\MapHelper::getDrivingDistance(
+        $distanceData = \App\Http\Controllers\LocationController::getDrivingDistance(
             $originLat,
             $originLng,
             $station->Latitude,

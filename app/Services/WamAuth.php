@@ -48,4 +48,37 @@ class WamAuth
 
         return null;
     }
+    public function getVerifyRequests(string $accessToken, array $params = [])
+    {
+        $defaultParams = [
+            'page' => 1,
+            'limit' => 10,
+            'orderBy' => 'desc',
+            'sortBy' => null,
+            'SheetNo' => null,
+            'TotalRequest' => null,
+            'MerchanName' => null,
+            'ReceiveBusinessType' => null,
+            'Status' => null,
+            'haveInspector' => null,
+            'CreateTime' => null,
+        ];
+
+        $query = array_merge($defaultParams, $params);
+
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => "Bearer {$accessToken}",
+        ])->get("https://wam.dit.go.th/api/v1//verify-request", $query);
+
+        if ($response->successful()) {
+            return $response->json(); // คืนเป็น array
+        }
+
+        // กรณี error
+        return [
+            'status' => $response->status(),
+            'body'   => $response->body(),
+        ];
+    }
 }

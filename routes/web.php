@@ -19,7 +19,8 @@ use App\Http\Controllers\{
     ContactController,
     WorkController,
     QuotationController,
-    PromotionController
+    PromotionController,
+    WamVerifyRequestController
 };
 
 Route::get('/', function () {
@@ -160,3 +161,18 @@ Route::middleware('auth')->group(function () {
 });
 Route::get('/test/wam/login', [\App\Http\Controllers\WamAuthTestController::class, 'index']);
 Route::get('/test-pdf', [App\Http\Controllers\QuotationController::class, 'testPDF']);
+Route::prefix('wam-verify-requests')->group(function () {
+    Route::get('/', [WamVerifyRequestController::class, 'index']); // Sync + Get data
+    Route::get('/database', [WamVerifyRequestController::class, 'getFromDatabase']); // Get from DB only
+    Route::get('/statistics', [WamVerifyRequestController::class, 'getStatistics']); // Get stats
+    Route::post('/sync', [WamVerifyRequestController::class, 'syncData']); // Manual sync
+    Route::get('/{id}', [WamVerifyRequestController::class, 'show']); // Get single record
+    Route::patch('/{id}/status', [WamVerifyRequestController::class, 'updateStatus']); // Update status
+});
+Route::get('/dispenser-check/{workId}/{stationId}', function($workId, $stationId) {
+    return view('dispensers.dispenser-check', [
+        'workId' => $workId,
+        'stationId' => $stationId,
+        'stationName' => 'สถานี ' . $stationId
+    ]);
+})->where(['workId' => '[0-9]+', 'stationId' => '[0-9]+']);
